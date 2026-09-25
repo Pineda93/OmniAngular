@@ -1,5 +1,6 @@
 import { Component, signal, computed, ElementRef, ViewChild, afterNextRender } from '@angular/core';
 import { ModuloFarmacovigilanciaComponent } from './components/modulo-farmacovigilancia/modulo-farmacovigilancia.component';
+import { ModuloMapaComponent } from './components/modulo-mapa/modulo-mapa.component';
 
 interface TabDef {
   id: 'farma' | 'ingreso' | 'inventario' | 'mapa' | 'analytics';
@@ -17,7 +18,8 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ModuloFarmacovigilanciaComponent], // aca agregan sus imports colegas de institucion
+  imports: [ModuloFarmacovigilanciaComponent, ModuloMapaComponent], // aca agregan sus imports colegas de institucion
+  
   template: `
     <div class="bg-fx" aria-hidden="true"><span class="pattern"></span></div>
 
@@ -61,19 +63,22 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
         </nav>
       </header>
 
-      <section class="content-area">
-        @if (tab() === 'farma') {
-          <app-modulo-farmacovigilancia class="fade-in" />
-        } @else {
-          <div class="placeholder fade-in">
-            <svg class="placeholder-icon" viewBox="0 0 24 24" width="40" height="40">
-              <path [attr.d]="icon(tab())" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <h2>Módulo {{ activeLabel() }} en construcción</h2>
-            <p>Espacio reservado para que el resto del equipo conecte su componente aquí.</p>
-          </div>
-        }
-      </section>
+<section class="content-area">
+  @if (tab() === 'farma') {
+    <app-modulo-farmacovigilancia class="fade-in" />
+  } @else if (tab() === 'mapa') {
+    <!-- AQUÍ SE USA TU COMPONENTE -->
+    <app-modulo-mapa class="fade-in" />
+  } @else {
+    <div class="placeholder fade-in">
+      <svg class="placeholder-icon" viewBox="0 0 24 24" width="40" height="40">
+        <path [attr.d]="icon(tab())" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <h2>Módulo {{ activeLabel() }} en construcción</h2>
+      <p>Espacio reservado para que el resto del equipo conecte su componente aquí.</p>
+    </div>
+  }
+</section>
     </main>
   `,
   styles: [`
