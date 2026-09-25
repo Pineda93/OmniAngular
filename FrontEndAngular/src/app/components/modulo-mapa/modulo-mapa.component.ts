@@ -58,14 +58,14 @@ export class ModuloMapaComponent implements AfterViewInit {
   }
 
   private cargarMarcadores(): void {
-    // Obtenemos el inventario general del servicio
+    // Obtenemos el inventario general @shoniro a considerar :v
     const listaMedicamentos: Medicamento[] = (this.omniService as any).medicamentosSignal();
 
     listaMedicamentos.forEach((med) => {
       const coords = COORDENADAS_DEPARTAMENTOS[med.departamentoDestino] || [14.6349, -90.5069];
       const marker = L.marker(coords).addTo(this.map);
 
-      // Asignar color según el estado del lote en el OmniService
+      // Acambio de colores feat @ambrocio
       const colorEstado = med.estado === 'Alerta Sanitaria' ? '#dc2626' : (med.estado === 'Despachado' ? '#059669' : '#2563eb');
 
       const popupContent = `
