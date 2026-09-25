@@ -7,12 +7,11 @@ import { Medicamento } from '../../models/medicamento.model';
 declare let L: any;
 
 const COORDENADAS_DEPARTAMENTOS: { [key: string]: [number, number] } = {
-  'Guatemala': [14.6349, -90.5069],
-  'Quetzaltenango': [14.8347, -91.5181],
-  'Escuintla': [14.3050, -90.7850],
-  'Petén': [16.9292, -89.8882],
-  'Alta Verapaz': [15.4756, -90.3792],
-  'Izabal': [15.4022, -89.1371]
+  'Guatemala': [14.63991530692092, -90.52096009040442],
+  'Quetzaltenango': [14.860016317453532, -91.54001712079123],
+  'Escuintla': [14.294975319113835, -90.78265214380518],
+  'Petén': [16.913522090583303, -89.91298208979818],      
+  'Izabal': [15.460210429932761, -88.85936379008118],     
 };
 
 @Component({

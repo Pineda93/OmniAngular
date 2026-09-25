@@ -1,1 +1,116 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --primary: #0f9d78;
+  --primary-hover: #0c7d5f;
+  --tint: rgba(15, 157, 120, 0.12);
+  --bg-color: #f6faf8;
+  --surface: #ffffff;
+  --text-main: #2f3b37;
+  --text-muted: #6b7a75;
+  --danger: #ef4444;
+  --danger-bg: #fef2f2;
+  --success: #10b981;
+  --success-bg: #ecfdf5;
+  --border: #e3ece8;
+  --shadow: 0 4px 10px -4px rgb(15 60 45 / 0.12);
+  --radius: 10px;
+}
+
+/* Cada modulo se pinta con su propio color*/
+[data-theme='farma']      { --primary:#0f9d78; --primary-hover:#0c7d5f; --tint:rgba(15,157,120,.12); }
+[data-theme='ingreso']    { --primary:#16a34a; --primary-hover:#15803d; --tint:rgba(22,163,74,.12); }
+[data-theme='inventario'] { --primary:#c2760c; --primary-hover:#9a5d09; --tint:rgba(194,118,12,.12); }
+[data-theme='mapa']       { --primary:#2563eb; --primary-hover:#1d4ed8; --tint:rgba(37,99,235,.12); }
+[data-theme='analytics']  { --primary:#6d28d9; --primary-hover:#5b21b6; --tint:rgba(109,40,217,.12); }
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-main);
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(3%, 4%); }
+}
+
+.fade-in {
+  animation: slideIn 0.35s ease-out forwards;
+}
+
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.btn:active { transform: scale(0.97); }
+
+.btn-danger { background-color: var(--danger); color: white; }
+.btn-danger:hover { background-color: #dc2626; }
+
+.btn-success { background-color: var(--success); color: white; }
+.btn-success:hover { background-color: #059669; }
+
+.input-control {
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary);
+}
+
+.card.alerta {
+  border-left: 4px solid var(--danger);
+  background-color: var(--danger-bg);
+}
+
+.badge {
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  background: var(--tint);
+  color: var(--primary);
+}
+
+.badge.badge-alerta {
+  background: var(--danger);
+  color: white;
+}
