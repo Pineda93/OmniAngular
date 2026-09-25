@@ -59,6 +59,32 @@ export class OmniService {
       departamentoDestino: 'Guatemala',
       estado: 'Alerta Sanitaria',
       motivoAlerta: 'Reporte DRCPFA: Sospecha de alteración en etiqueta y sello de seguridad.'
+    },
+    {
+      id: 5,
+      nombre: 'Suero Oral Electrolitos',
+      registroSanitario: 'PF-11200-2025',
+      lote: 'LOTE-PETEN-01',
+      fechaVencimiento: '2027-01-10',
+      cantidad: 3000,
+      precioUnitario: 12.50,
+      temperatura: '15°C - 30°C',
+      destino: 'Hospital Público',
+      departamentoDestino: 'Petén',
+      estado: 'Disponible'
+    },
+    {
+      id: 6,
+      nombre: 'Cefalexina 500mg',
+      registroSanitario: 'PF-99100-2024',
+      lote: 'LOTE-IZABAL-02',
+      fechaVencimiento: '2026-12-01',
+      cantidad: 1500,
+      precioUnitario: 25.00,
+      temperatura: '15°C - 25°C',
+      destino: 'Hospital Público',
+      departamentoDestino: 'Izabal',
+      estado: 'Disponible'
     }
   ]);
 

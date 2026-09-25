@@ -8,7 +8,7 @@ export interface Medicamento {
   precioUnitario: number; // En Quetzales (Q) para cálculo financiero en Analytics
   temperatura: string; // Control de Cadena de Frío
   destino: 'IGSS' | 'Hospital Público' | 'Farmacia Privada';
-  departamentoDestino: string; // Para el mapa (Guatemala, Quetzaltenango, Escuintla, etc.)
+  departamentoDestino: string; // Para el mapa (Guatemala, Quetzaltenango, Escuintla, PETEGOD.)
   estado: 'Disponible' | 'Despachado' | 'Alerta Sanitaria';
   motivoAlerta?: string;
 }
