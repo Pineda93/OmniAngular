@@ -1,5 +1,6 @@
 import { Component, signal, computed, ElementRef, ViewChild, afterNextRender } from '@angular/core';
 import { ModuloFarmacovigilanciaComponent } from './components/modulo-farmacovigilancia/modulo-farmacovigilancia.component';
+import { ModuloInventarioComponent } from './components/modulo-inventario/modulo-inventario.component';
 import { ModuloMapaComponent } from './components/modulo-mapa/modulo-mapa.component';
 
 interface TabDef {
@@ -18,7 +19,7 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [ModuloFarmacovigilanciaComponent, ModuloMapaComponent], // aca agregan sus imports colegas de institucion
+  imports: [ModuloFarmacovigilanciaComponent, ModuloInventarioComponent, ModuloMapaComponent], // aca agregan sus imports colegas de institucion
   
   template: `
     <div class="bg-fx" aria-hidden="true"><span class="pattern"></span></div>
@@ -66,8 +67,9 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
 <section class="content-area">
   @if (tab() === 'farma') {
     <app-modulo-farmacovigilancia class="fade-in" />
+  } @else if (tab() === 'inventario') {
+    <app-modulo-inventario class="fade-in" />
   } @else if (tab() === 'mapa') {
-    <!-- AQUÍ SE USA TU COMPONENTE -->
     <app-modulo-mapa class="fade-in" />
   } @else {
     <div class="placeholder fade-in">
