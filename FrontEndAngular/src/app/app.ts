@@ -4,6 +4,7 @@ import { ModuloInventarioComponent } from './components/modulo-inventario/modulo
 import { ModuloMapaComponent } from './components/modulo-mapa/modulo-mapa.component';
 // 1. IMPORTAR TU COMPONENTE (Ajusta la ruta si 'modulo-ingreso.component.ts' está en otra carpeta)
 import { IngresoComponent } from './components/modulo-ingreso/modulo-ingreso.component';
+import { ModuloAnalyticsComponent } from './components/modulo-analytics/modulo-analytics.component';
 
 interface TabDef {
   id: 'farma' | 'ingreso' | 'inventario' | 'mapa' | 'analytics';
@@ -26,7 +27,8 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
     ModuloFarmacovigilanciaComponent, 
     ModuloInventarioComponent, 
     ModuloMapaComponent,
-    IngresoComponent
+    IngresoComponent,
+    ModuloAnalyticsComponent
   ],
   
   template: `
