@@ -22,6 +22,8 @@
 [data-theme='inventario'] { --primary:#c2760c; --primary-hover:#9a5d09; --tint:rgba(194,118,12,.12); }
 [data-theme='mapa']       { --primary:#2563eb; --primary-hover:#1d4ed8; --tint:rgba(37,99,235,.12); }
 [data-theme='analytics']  { --primary:#6d28d9; --primary-hover:#5b21b6; --tint:rgba(109,40,217,.12); }
+[data-theme='distribucion'] { --primary:#0891b2; --primary-hover:#0e7490; --tint:rgba(8,145,178,.12); }
+[data-theme='alertas']    { --primary:#d97706; --primary-hover:#b45309; --tint:rgba(217,119,6,.12); }
 
 * {
   box-sizing: border-box;

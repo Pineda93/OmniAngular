@@ -2,11 +2,13 @@ import { Component, signal, computed, ElementRef, ViewChild, afterNextRender } f
 import { ModuloFarmacovigilanciaComponent } from './components/modulo-farmacovigilancia/modulo-farmacovigilancia.component';
 import { ModuloInventarioComponent } from './components/modulo-inventario/modulo-inventario.component';
 import { ModuloMapaComponent } from './components/modulo-mapa/modulo-mapa.component';
-// 1. IMPORTAR TU COMPONENTE (Ajusta la ruta si 'modulo-ingreso.component.ts' está en otra carpeta)
 import { IngresoComponent } from './components/modulo-ingreso/modulo-ingreso.component';
+import { ModuloAnalyticsComponent } from './components/modulo-analytics/modulo-analytics.component';
+import { ModuloDistribucionComponent } from './components/modulo-distribucion/modulo-distribucion.component';
+import { ModuloAlertasStockComponent } from './components/modulo-alertas-stock/modulo-alertas-stock.component';
 
 interface TabDef {
-  id: 'farma' | 'ingreso' | 'inventario' | 'mapa' | 'analytics';
+  id: 'farma' | 'ingreso' | 'inventario' | 'mapa' | 'analytics' | 'distribucion' | 'alertas';
   label: string;
 }
 
@@ -16,19 +18,22 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
   inventario: 'M12 3 L20 7 L20 17 L12 21 L4 17 L4 7 Z M4 7 L12 11 L20 7 M12 11 L12 21',
   mapa: 'M12 21 C12 21 5 14.5 5 10 A7 7 0 0 1 19 10 C19 14.5 12 21 12 21 Z M12 12.5 A2.5 2.5 0 1 0 12 7.5 A2.5 2.5 0 0 0 12 12.5 Z',
   analytics: 'M4 20 L4 10 M10 20 L10 4 M16 20 L16 13 M2 20 L22 20',
+  distribucion: 'M16 3 L21 8 L21 21 L3 21 L3 8 L8 3 Z M8 3 L8 8 L3 8 M16 3 L16 8 L21 8 M12 12 L12 17 M9.5 14.5 L14.5 14.5',
+  alertas: 'M12 2 L22 20 L2 20 Z M12 9 L12 13 M12 16 L12 17',
 };
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  // 2. AGREGAR 'IngresoComponent' A LOS IMPORTS DEL COMPONENTE
   imports: [
-    ModuloFarmacovigilanciaComponent, 
-    ModuloInventarioComponent, 
+    ModuloFarmacovigilanciaComponent,
+    ModuloInventarioComponent,
     ModuloMapaComponent,
-    IngresoComponent
+    IngresoComponent,
+    ModuloAnalyticsComponent,
+    ModuloDistribucionComponent,
+    ModuloAlertasStockComponent
   ],
-  
   template: `
     <div class="bg-fx" aria-hidden="true"><span class="pattern"></span></div>
 
@@ -76,20 +81,17 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
         @if (tab() === 'farma') {
           <app-modulo-farmacovigilancia class="fade-in" />
         } @else if (tab() === 'ingreso') {
-          <!-- 3. REEMPLAZADO EL PLACEHOLDER POR TU COMPONENTE DE INGRESO -->
           <app-ingreso class="fade-in" />
         } @else if (tab() === 'inventario') {
           <app-modulo-inventario class="fade-in" />
         } @else if (tab() === 'mapa') {
           <app-modulo-mapa class="fade-in" />
-        } @else {
-          <div class="placeholder fade-in">
-            <svg class="placeholder-icon" viewBox="0 0 24 24" width="40" height="40">
-              <path [attr.d]="icon(tab())" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            <h2>Módulo {{ activeLabel() }} en construcción</h2>
-            <p>Espacio reservado para que el resto del equipo conecte su componente aquí.</p>
-          </div>
+        } @else if (tab() === 'analytics') {
+          <app-modulo-analytics class="fade-in" />
+        } @else if (tab() === 'distribucion') {
+          <app-modulo-distribucion class="fade-in" />
+        } @else if (tab() === 'alertas') {
+          <app-modulo-alertas-stock class="fade-in" />
         }
       </section>
     </main>
@@ -153,12 +155,6 @@ const ICON_PATHS: Record<TabDef['id'], string> = {
     }
 
     .content-area { padding: 2rem; flex: 1; }
-    .placeholder {
-      text-align: center; padding: 4rem 2rem; background: var(--surface); border-radius: var(--radius);
-      border: 2px dashed var(--border); color: var(--text-muted);
-    }
-    .placeholder-icon { color: var(--primary); margin-bottom: 0.75rem; }
-    .placeholder h2 { color: var(--primary); margin-bottom: 0.5rem; }
 
     @media (max-width: 720px) { .navbar { padding: 1rem; } }
   `]
@@ -170,6 +166,8 @@ export class App {
     { id: 'farma', label: 'Farmacovigilancia' },
     { id: 'ingreso', label: 'Ingreso' },
     { id: 'inventario', label: 'Inventario FEFO' },
+    { id: 'distribucion', label: 'Distribución' },
+    { id: 'alertas', label: 'Alertas Stock' },
     { id: 'mapa', label: 'Mapa' },
     { id: 'analytics', label: 'Analytics' },
   ];

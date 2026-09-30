@@ -14,7 +14,7 @@ import { OmniService } from '../../services/omni.service';
         <!-- Cabecera adaptada al esquema del módulo usando var(--primary) -->
         <div class="header-banner">
           <div class="header-icon">
-            💊
+            <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 L8 12 L10 16 L14 16 L16 12 L20 12 M5 12 L6 5 L18 5 L19 12 M4 12 L4 18 C4 18.55 4.45 19 5 19 L19 19 C19.55 19 20 18.55 20 18 L20 12"/></svg>
           </div>
           <div class="header-text">
             <h2>Módulo de Ingreso</h2>
@@ -27,14 +27,14 @@ import { OmniService } from '../../services/omni.service';
           <!-- Mensajes de Alerta / Éxito -->
           @if (omniService.mensajeExito()) {
             <div class="alert-box success-box">
-              <span>✅ {{ omniService.mensajeExito() }}</span>
+              <span>{{ omniService.mensajeExito() }}</span>
               <button type="button" class="close-btn" (click)="omniService.limpiarMensajes()">×</button>
             </div>
           }
 
           @if (omniService.mensajeError()) {
             <div class="alert-box danger-box">
-              <span>⚠️ {{ omniService.mensajeError() }}</span>
+              <span>{{ omniService.mensajeError() }}</span>
               <button type="button" class="close-btn" (click)="omniService.limpiarMensajes()">×</button>
             </div>
           }
@@ -110,7 +110,7 @@ import { OmniService } from '../../services/omni.service';
             <!-- Botón de Acción -->
             <div class="form-actions">
               <button type="submit" class="submit-btn" [disabled]="ingresoForm.invalid">
-                ➕ Registrar Lote en el Sistema
+                Registrar Lote en el Sistema
               </button>
             </div>
           </form>

@@ -1,5 +1,5 @@
 import { Injectable, signal, computed } from '@angular/core';
-import { Medicamento } from '../models/medicamento.model';
+import { Medicamento, DistribucionLote, AlertaStock } from '../models/medicamento.model';
 
 @Injectable({
   providedIn: 'root'
@@ -88,6 +88,17 @@ export class OmniService {
     }
   ]);
 
+  private distribucionesSignal = signal<DistribucionLote[]>([
+    { id: 1, loteOrigen: 'LOTE-2026-A', medicamentoId: 1, nombreMedicamento: 'Amoxicilina 500mg (Cápsulas)', cantidadAsignada: 2000, destinoInstitucion: 'IGSS', departamentoDestino: 'Guatemala', fechaDistribucion: '2026-09-28', estado: 'En Tránsito' },
+    { id: 2, loteOrigen: 'LOTE-2026-A', medicamentoId: 1, nombreMedicamento: 'Amoxicilina 500mg (Cápsulas)', cantidadAsignada: 1000, destinoInstitucion: 'Hospital Público', departamentoDestino: 'Quetzaltenango', fechaDistribucion: '2026-09-28', estado: 'Pendiente' }
+  ]);
+
+  private alertasStockSignal = signal<AlertaStock[]>([
+    { id: 1, institucion: 'Hospital Roosevelt', tipoInstitucion: 'Hospital Público', departamento: 'Guatemala', medicamentoSolicitado: 'Amoxicilina 500mg (Cápsulas)', cantidadActual: 50, cantidadMinima: 500, prioridad: 'Crítica', fechaReporte: '2026-09-29', estado: 'Pendiente', notas: 'Stock casi agotado, se necesita reabastecimiento urgente.' },
+    { id: 2, institucion: 'IGSS Zona 9', tipoInstitucion: 'IGSS', departamento: 'Guatemala', medicamentoSolicitado: 'Insulina Humana NPH (Cadena de Frío)', cantidadActual: 120, cantidadMinima: 300, prioridad: 'Alta', fechaReporte: '2026-09-29', estado: 'En Proceso' },
+    { id: 3, institucion: 'Hospital Regional de Escuintla', tipoInstitucion: 'Hospital Público', departamento: 'Escuintla', medicamentoSolicitado: 'Suero Oral Electrolitos', cantidadActual: 200, cantidadMinima: 400, prioridad: 'Media', fechaReporte: '2026-09-28', estado: 'Pendiente' }
+  ]);
+
   public mensajeError = signal<string | null>(null);
   public mensajeExito = signal<string | null>(null);
 
@@ -101,6 +112,70 @@ export class OmniService {
   public totalRegistros = computed(() => this.medicamentosSignal().length);
   public disponibles = computed(() => this.medicamentosSignal().filter(m => m.estado === 'Disponible').length);
   public alertasActivas = computed(() => this.medicamentosSignal().filter(m => m.estado === 'Alerta Sanitaria').length);
+
+  public distribuciones = computed(() => this.distribucionesSignal());
+  public alertasStock = computed(() => this.alertasStockSignal());
+  public alertasStockPendientes = computed(() => this.alertasStockSignal().filter(a => a.estado !== 'Resuelta').length);
+
+  // UMBRAL DE STOCK BAJO (si la cantidad cae por debajo de este número, se genera alerta automática)
+  private readonly UMBRAL_CRITICO = 200;
+  private readonly UMBRAL_ALTO = 500;
+  private readonly UMBRAL_MEDIO = 1000;
+
+  // Alertas automáticas generadas por detección de stock bajo en inventario
+  public alertasAutomaticas = computed(() => {
+    const medicamentos = this.medicamentosSignal();
+    const alertas: {
+      medicamento: string;
+      lote: string;
+      cantidad: number;
+      destino: string;
+      departamento: string;
+      prioridad: 'Crítica' | 'Alta' | 'Media';
+      mensaje: string;
+    }[] = [];
+
+    medicamentos.forEach(med => {
+      if (med.estado !== 'Disponible') return;
+
+      if (med.cantidad <= this.UMBRAL_CRITICO) {
+        alertas.push({
+          medicamento: med.nombre,
+          lote: med.lote,
+          cantidad: med.cantidad,
+          destino: med.destino,
+          departamento: med.departamentoDestino,
+          prioridad: 'Crítica',
+          mensaje: `Stock crítico: Solo quedan ${med.cantidad} unidades. Reabastecimiento urgente requerido.`
+        });
+      } else if (med.cantidad <= this.UMBRAL_ALTO) {
+        alertas.push({
+          medicamento: med.nombre,
+          lote: med.lote,
+          cantidad: med.cantidad,
+          destino: med.destino,
+          departamento: med.departamentoDestino,
+          prioridad: 'Alta',
+          mensaje: `Stock bajo: ${med.cantidad} unidades restantes. Planificar reabastecimiento.`
+        });
+      } else if (med.cantidad <= this.UMBRAL_MEDIO) {
+        alertas.push({
+          medicamento: med.nombre,
+          lote: med.lote,
+          cantidad: med.cantidad,
+          destino: med.destino,
+          departamento: med.departamentoDestino,
+          prioridad: 'Media',
+          mensaje: `Stock moderado: ${med.cantidad} unidades. Monitorear niveles.`
+        });
+      }
+    });
+
+    return alertas.sort((a, b) => {
+      const orden = { 'Crítica': 0, 'Alta': 1, 'Media': 2 };
+      return orden[a.prioridad] - orden[b.prioridad];
+    });
+  });
 
   // MÉTODOS DE OPERACIÓN PARA CADA INTEGRANTE
 
@@ -155,5 +230,74 @@ export class OmniService {
   public limpiarMensajes() {
     this.mensajeError.set(null);
     this.mensajeExito.set(null);
+  }
+
+  // MÉTODOS NUEVOS
+
+  public dividirLote(medicamentoId: number, asignaciones: {cantidad: number, destino: 'IGSS' | 'Hospital Público' | 'Farmacia Privada', departamento: string}[]) {
+    const medicamento = this.medicamentosSignal().find(m => m.id === medicamentoId);
+    if (!medicamento) {
+      this.mensajeError.set('Medicamento no encontrado.');
+      return;
+    }
+
+    const totalAsignado = asignaciones.reduce((sum, a) => sum + a.cantidad, 0);
+    if (totalAsignado > medicamento.cantidad) {
+      this.mensajeError.set(`Cantidad total asignada (${totalAsignado}) excede la cantidad disponible (${medicamento.cantidad}).`);
+      return;
+    }
+
+    const nuevasDistribuciones: DistribucionLote[] = asignaciones.map((a, i) => ({
+      id: Date.now() + i,
+      loteOrigen: medicamento.lote,
+      medicamentoId: medicamento.id,
+      nombreMedicamento: medicamento.nombre,
+      cantidadAsignada: a.cantidad,
+      destinoInstitucion: a.destino,
+      departamentoDestino: a.departamento,
+      fechaDistribucion: new Date().toISOString().split('T')[0],
+      estado: 'Pendiente'
+    }));
+
+    this.distribucionesSignal.update(list => [...list, ...nuevasDistribuciones]);
+    
+    this.medicamentosSignal.update(list => 
+      list.map(m => m.id === medicamentoId ? { ...m, cantidad: m.cantidad - totalAsignado } : m)
+    );
+
+    this.mensajeExito.set(`Lote [${medicamento.lote}] fraccionado en ${asignaciones.length} destinos correctamente.`);
+  }
+
+  public actualizarEstadoDistribucion(id: number, nuevoEstado: 'Pendiente' | 'En Tránsito' | 'Entregado') {
+    this.distribucionesSignal.update(list =>
+      list.map(d => d.id === id ? { ...d, estado: nuevoEstado } : d)
+    );
+  }
+
+  public reportarAlertaStock(alerta: Omit<AlertaStock, 'id' | 'fechaReporte' | 'estado'>) {
+    const nuevaAlerta: AlertaStock = {
+      ...alerta,
+      id: Date.now(),
+      fechaReporte: new Date().toISOString().split('T')[0],
+      estado: 'Pendiente'
+    };
+    this.alertasStockSignal.update(list => [...list, nuevaAlerta]);
+    this.mensajeExito.set('Alerta de stock reportada exitosamente.');
+  }
+
+  public atenderAlertaStock(id: number) {
+    this.alertasStockSignal.update(list =>
+      list.map(a => a.id === id ? { ...a, estado: 'En Proceso' } : a)
+    );
+  }
+
+  public resolverAlertaStock(id: number) {
+    this.alertasStockSignal.update(list =>
+      list.map(a => a.id === id ? { ...a, estado: 'Resuelta' } : a)
+    );
+  }
+
+  public getMedicamentosDisponibles() {
+    return this.medicamentosSignal().filter(m => m.estado === 'Disponible' && m.cantidad > 0);
   }
 }
